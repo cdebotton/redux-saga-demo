@@ -1,0 +1,23 @@
+{
+  "apps": [
+    {
+      "name": "http",
+      "script": "./libs/http/index.ts",
+      "interpreter": "./node_modules/.bin/ts-node",
+      "watch": true,
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3000
+      }
+    },
+    {
+      "name": "webpack",
+      "script": "./bin/development-server.ts",
+      "interpreter": "./node_modules/.bin/ts-node",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3001
+      }
+    }
+  ]
+}
