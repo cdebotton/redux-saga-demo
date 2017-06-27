@@ -1,8 +1,11 @@
-import { combineReducers } from 'redux';
+import { combineReducers, Reducer } from 'redux';
+import { IState } from '../state';
+import router from './router';
 import session from './session';
 
-const rootReducer = combineReducers({
+const rootReducer = combineReducers<IState>({
   session,
+  router,
 });
 
 export default rootReducer;

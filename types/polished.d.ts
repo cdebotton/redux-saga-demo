@@ -27,6 +27,7 @@ declare module 'polished' {
   export function directionalProperty(property: string, values?: string[]): string;
   export function em(pxval: string | number, base?: string | number): string;
   export function modularScale(steps: number, base?: string | number, ratio?: Ratio): string;
+  export function placeholder(styles: object, parent?: string): string;
   export function rem(pxval: string | number, base?: string | number): string;
 
 }

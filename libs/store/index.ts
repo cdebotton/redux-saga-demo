@@ -2,11 +2,12 @@ import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware, { END } from 'redux-saga';
 import rootReducer from './modules/rootReducer';
+import { IState } from './state';
 
 const configureStore = () => {
   const sagaMiddleware = createSagaMiddleware();
   const enhancer = composeWithDevTools(applyMiddleware(sagaMiddleware));
-  const store = createStore(rootReducer, enhancer);
+  const store = createStore<IState>(rootReducer, enhancer);
 
   if (module.hot) {
     module.hot.accept('./modules/rootReducer', () => {

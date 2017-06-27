@@ -2,6 +2,7 @@ import * as Koa from 'koa';
 import * as React from 'react';
 import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { Provider } from 'react-redux';
+import { StaticRouter } from 'react-router';
 import { ServerStyleSheet } from 'styled-components';
 import Root from '../../containers/Root';
 import configureStore from '../../store';
@@ -26,13 +27,16 @@ const Html = ({ contents, css }: IProps) => (
 );
 
 const renderMiddleware = () => (ctx: Koa.Context) => {
+  const routerContext = {};
   const sheet = new ServerStyleSheet();
   const store = configureStore();
 
   const contents = renderToString(
     sheet.collectStyles(
       <Provider store={store}>
-        <Root />
+        <StaticRouter location={ctx.req.url} context={routerContext}>
+          <Root />
+        </StaticRouter>
       </Provider>,
     ),
   );
