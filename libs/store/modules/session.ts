@@ -2,42 +2,23 @@ import { combineReducers } from 'redux';
 import { delay, SagaIterator } from 'redux-saga';
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 import { ISessionService } from '../../utils/SessionService';
-import { IAction } from '../action';
+import { actionCreatorFactory, IAction, IAnyAction, isType } from '../action';
 import { ISession, Token } from '../state';
-import { LOCATION_CHANGE } from './router';
+import { locationChange } from './router';
 
 /**
  * Actions
  */
 export const LOGIN_REQUEST = '@@session/LOGIN_REQUEST';
-export const LOGIN_SUCCESS = '@@session/LOGIN_SUCCESS';
-export const LOGIN_FAILURE = '@@session/LOGIN_FAILURE';
-export const LOGIN_CANCEL = '@@session/LOGIN_CANCEL';
-export const LOGOUT_REQUEST = '@@session/LOGOUT_REQUEST';
-export const LOGOUT_SUCCESS = '@@session/LOGOUT_SUCCESS';
-export const LOGOUT_FAILURE = '@@session/LOGOUT_FAILURE';
 
-const loginSuccess = (token: string): IAction<string> => ({
-  payload: token,
-  type: LOGIN_SUCCESS,
-});
-
-const loginFailure = (error: string): IAction<string> => ({
-  error: true,
-  payload: error,
-  type: LOGIN_FAILURE,
-});
-
-const logoutSuccess = (): IAction<void> => ({
-  payload: undefined,
-  type: LOGOUT_SUCCESS,
-});
-
-const logoutFailure = (err: string): IAction<string> => ({
-  error: true,
-  payload: err,
-  type: LOGOUT_FAILURE,
-});
+const actionCreator = actionCreatorFactory('@@session');
+const loginRequest = actionCreator<{ username: string, password: string }>('LOGIN_REQUEST');
+const loginSuccess = actionCreator<string>('LOGIN_SUCCESS');
+const loginFailure = actionCreator<string>('LOGIN_FAILURE');
+const loginCancel = actionCreator<string>('LOGIN_CANCEL');
+const logoutRequest = actionCreator('LOGOUT_REQUEST');
+const logoutSuccess = actionCreator('LOGOUT_SUCCESS');
+const logoutFailure = actionCreator<string>('LOGOUT_FAILURE');
 
 // Sagas
 /**
@@ -49,7 +30,7 @@ const logoutFailure = (err: string): IAction<string> => ({
 function* login(username: string, password: string, session: ISessionService) {
   try {
     const { navigateAway, token, timeout } = yield race({
-      navigateAway: take(LOCATION_CHANGE),
+      navigateAway: take(locationChange.type),
       timeout: call(delay, 2000),
       token: call(session.login, username, password),
     });
@@ -94,30 +75,33 @@ export function* sessionSaga(session: ISessionService): SagaIterator {
     const { payload: { username, password } } = yield take(LOGIN_REQUEST);
     const task = yield fork(login, username, password, session);
 
-    if (yield take(LOGIN_CANCEL)) {
+    if (yield take(loginCancel.type)) {
       yield cancel(task);
     }
 
-    yield take([LOGIN_FAILURE, LOGOUT_REQUEST]);
+    yield take([loginFailure.type, loginRequest.type]);
     yield fork(logout, session);
   }
 }
 
 // Reducers
-const token = (value: Token = null, action: IAction<Token>): Token => {
-  return value;
+const token = (state: Token = null, action: IAnyAction): Token => {
+  if (isType(action, loginSuccess)) {
+    return action.payload;
+  }
+  return state;
 };
 
-const error = (value: string = null, action: IAction<string>): string => {
-  if (action.type === LOGIN_FAILURE) {
+const error = (state: string = null, action: IAnyAction): string => {
+  if (isType(action, loginFailure)) {
     return action.payload;
   }
 
-  return value;
+  return state;
 };
 
-const loading = (value: boolean = false, action: IAction<boolean>): boolean => {
-  return value;
+const loading = (state: boolean = false, action: IAnyAction): boolean => {
+  return state;
 };
 
 const sessionReducer = combineReducers<ISession>({

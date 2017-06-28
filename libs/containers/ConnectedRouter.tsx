@@ -2,7 +2,7 @@ import { History, Location } from 'history';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { Router as ReactRouter } from 'react-router';
-import { LOCATION_CHANGE } from '../store/modules/router';
+import { locationChange } from '../store/modules/router';
 
 interface IProps {
   history: History;
@@ -39,10 +39,7 @@ class Router extends React.Component<IProps & IDispatchProps> {
 }
 
 const mapDispatchToState = (dispatch: Dispatch<any>) => ({
-  handleLocationChange: (location: Location) => dispatch({
-    payload: location,
-    type: LOCATION_CHANGE,
-  }),
+  handleLocationChange: (location: Location) => dispatch(locationChange(location)),
 });
 
 const connector = connect<void, IDispatchProps, IProps>(undefined, mapDispatchToState);
