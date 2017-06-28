@@ -12,13 +12,13 @@ import { locationChange } from './router';
 export const LOGIN_REQUEST = '@@session/LOGIN_REQUEST';
 
 const actionCreator = actionCreatorFactory('@@session');
-const loginRequest = actionCreator<{ username: string, password: string }>('LOGIN_REQUEST');
-const loginSuccess = actionCreator<string>('LOGIN_SUCCESS');
-const loginFailure = actionCreator<string>('LOGIN_FAILURE');
-const loginCancel = actionCreator<string>('LOGIN_CANCEL');
-const logoutRequest = actionCreator('LOGOUT_REQUEST');
-const logoutSuccess = actionCreator('LOGOUT_SUCCESS');
-const logoutFailure = actionCreator<string>('LOGOUT_FAILURE');
+export const loginRequest = actionCreator<{ username: string, password: string }>('LOGIN_REQUEST');
+export const loginSuccess = actionCreator<string>('LOGIN_SUCCESS');
+export const loginFailure = actionCreator<string>('LOGIN_FAILURE');
+export const loginCancel = actionCreator('LOGIN_CANCEL');
+export const logoutRequest = actionCreator('LOGOUT_REQUEST');
+export const logoutSuccess = actionCreator('LOGOUT_SUCCESS');
+export const logoutFailure = actionCreator<string>('LOGOUT_FAILURE');
 
 // Sagas
 /**
@@ -27,7 +27,7 @@ const logoutFailure = actionCreator<string>('LOGOUT_FAILURE');
  * @param password string
  * @param session ISessionService
  */
-function* login(username: string, password: string, session: ISessionService) {
+export function* login(username: string, password: string, session: ISessionService) {
   try {
     const { navigateAway, token, timeout } = yield race({
       navigateAway: take(locationChange.type),
@@ -55,7 +55,7 @@ function* login(username: string, password: string, session: ISessionService) {
  * Process for logging out a user
  * @param session ISessionService
  */
-function* logout(session: ISessionService) {
+export function* logout(session: ISessionService) {
   try {
     yield call(session.logout);
     yield put(logoutSuccess());
@@ -79,7 +79,7 @@ export function* sessionSaga(session: ISessionService): SagaIterator {
       yield cancel(task);
     }
 
-    yield take([loginFailure.type, loginRequest.type]);
+    yield take([loginFailure.type, logoutRequest.type]);
     yield fork(logout, session);
   }
 }

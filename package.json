@@ -6,7 +6,7 @@
   "scripts": {
     "start": "pm2 start ecosystem.config.json; pm2 logs",
     "stop": "pm2 kill",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
@@ -63,5 +63,14 @@
     "webpack": "3.0.0",
     "webpack-dev-middleware": "1.11.0",
     "webpack-hot-middleware": "2.18.0"
+  },
+  "jest": {
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/preprocessor.js"
+    },
+    "testMatch": [
+      "**/__tests__/*.test.(ts|tsx|js)"
+    ]
   }
 }
