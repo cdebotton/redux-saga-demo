@@ -1,6 +1,6 @@
 import { History, Location } from 'history';
 import { SagaIterator } from 'redux-saga';
-import { take } from 'redux-saga/effects';
+import { call, take } from 'redux-saga/effects';
 import { IAction } from '../action';
 import { Router } from '../state';
 
@@ -30,19 +30,19 @@ export function* routerSaga(history: History): SagaIterator {
       const { payload: { method, args } } = action;
       switch (method) {
         case 'push':
-          history.push(args[0], args[1]);
+          yield call(history.push, args[0], args[1]);
           break;
         case 'replace':
-          history.replace(args[0], args[1]);
+          yield call(history.replace, args[0], args[1]);
           break;
         case 'go':
-          history.go(args[0]);
+          yield call(history.go, args[0]);
           break;
         case 'goBack':
-          history.goBack();
+          yield call(history.goBack);
           break;
         case 'goForward':
-          history.goForward();
+          yield call(history.goBack);
           break;
       }
     }

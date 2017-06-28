@@ -2,12 +2,26 @@ import { placeholder, rem } from 'polished';
 import styled, { css } from 'styled-components';
 
 export enum InputSize {
-  Medium,
+  Large = 0,
+  Medium = 1,
+  Small = 2,
 }
 
 interface IProps {
   size?: InputSize;
 }
+
+const getSize = (size: InputSize): string => {
+  switch (size) {
+    case InputSize.Large:
+      return '100%';
+    case InputSize.Medium:
+      return '50%';
+    case InputSize.Small:
+    default:
+      return '25%';
+  }
+};
 
 const Input = styled.input`
   background-color: transparent;
@@ -21,9 +35,8 @@ const Input = styled.input`
     color: '#fff',
   })}
 
-  ${(props: IProps) => props.size === InputSize.Medium && css`
-    flex: 0 0 50%;
-  `}
+  flex: 0 0 calc(${(props: IProps) => getSize(props.size)} - ${rem(10)});
+
 `;
 
 Input.defaultProps = {

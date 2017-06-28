@@ -6,11 +6,12 @@ import { Router } from 'react-router';
 import ConnectedRouter from '../containers/ConnectedRouter';
 import configureStore from '../store';
 import rootSaga from '../store/modules/rootSaga';
+import SessionService from '../utils/SessionService';
 
 const mount = document.querySelector('#app');
 const history = createBrowserHistory();
 const store = configureStore();
-store.run(rootSaga, { history });
+store.run(rootSaga, { history, session: new SessionService() });
 
 const render = () => {
   const Root = require('../containers/Root').default;
