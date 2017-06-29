@@ -1,0 +1,45 @@
+What is a saga:
+  - A way to handle side effects
+  - More directed than a thunk or middleware
+  - They're testable
+  - They're composable
+
+They're based on generators:
+  - What is a generator:
+    - A function that can be iterated over
+    - It has a start and an end
+    - They effectively have multiple returns, they yield them when certain circumstances are met
+    - They're supported by most major browsers and node already
+  - Why is that good for redux?:
+    - Responds to actions chronologically
+      - You can't log out if you're not already logged in
+    - Inherently asynchronous
+    - Gives you control over sequencing
+    - It's great for unit testing
+    - Again, it's composable
+
+Side Effects:
+  - Synchronous
+    - put (dispatch)
+    - call (invoke an action)
+    - take (wait for an action)
+    - select (get the current state)
+  - Asynchronous
+    - fork (invoke an action in the background)
+    - cancel (temrinate a background action)
+    - race (what completes first)
+    - takeEvery (wait for every action of a type)
+    - takeLatest (wait for every action of a type, cancelling the previous)
+    - actionChannel (wait for a stream of events, like go or clojure)
+  - And many, many more
+  - You can unit test all of this unlike you would with middleware or thunks
+
+Why use sagas:
+  - Provides easy flow control for complex situations
+  - You can unit test them
+  - They're composable
+  - Provides structure for side effects
+  - Based on generators which are widely supported (but we still should use transpilers)
+
+Why not use sagas:
+  - Generators can be a complicated subject
