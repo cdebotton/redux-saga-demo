@@ -4,7 +4,7 @@ import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effec
 import { ISessionService } from '../../utils/SessionService';
 import { actionCreatorFactory, IAction, IAnyAction, isType } from '../action';
 import { ISession, Token } from '../state';
-import { locationChange } from './router';
+import { locationChange, push } from './router';
 
 /**
  * Actions
@@ -59,6 +59,7 @@ export function* logout(session: ISessionService) {
   try {
     yield call(session.logout);
     yield put(logoutSuccess());
+    yield put(push('/'));
   } catch (err) {
     yield put(logoutFailure(err.toString()));
   }
